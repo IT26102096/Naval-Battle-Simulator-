@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "ship.h"
+#include "battle.h"
 
 
 int main(void)
@@ -35,7 +36,11 @@ int main(void)
         );
 
         printf(
-            "3. Exit\n"
+            "3. Run Part 1-A Simulation\n"
+        );
+
+        printf(
+            "4. Exit\n"
         );
 
         printf(
@@ -82,6 +87,24 @@ int main(void)
 
             case 3:
 
+                if (battlefieldReady)
+                {
+                    runPart1A(
+                        &battlefield
+                    );
+                }
+                else
+                {
+                    printf(
+                        "\nPlease setup the battlefield first.\n"
+                    );
+                }
+
+                break;
+
+
+            case 4:
+
                 printf(
                     "\nExiting simulator.\n"
                 );
@@ -97,7 +120,7 @@ int main(void)
         }
 
     }
-    while (choice != 3);
+    while (choice != 4);
 
 
     return 0;

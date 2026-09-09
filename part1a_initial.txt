@@ -1,0 +1,59 @@
+PART 1-A INITIAL BATTLEFIELD
+============================
+
+Canvas Size: 1000.00 x 1000.00
+
+Battleship
+Type: U
+Position: (500.00, 500.00)
+Maximum Velocity: 100.00
+Minimum Angle: 0.00
+Maximum Angle: 90.00
+
+Escort Ships
+------------
+
+Escort ID: 1
+Type: EB
+Position: (33.47, 329.96)
+Minimum Velocity: 18.98
+Maximum Velocity: 63.25
+Minimum Angle: 25.35
+Maximum Angle: 55.35
+Impact Power: 0.06
+
+Escort ID: 2
+Type: EA
+Position: (636.56, 863.62)
+Minimum Velocity: 41.52
+Maximum Velocity: 120.00
+Minimum Angle: 1.74
+Maximum Angle: 21.74
+Impact Power: 0.08
+
+Escort ID: 3
+Type: EE
+Position: (765.38, 317.86)
+Minimum Velocity: 19.88
+Maximum Velocity: 85.43
+Minimum Angle: 2.13
+Maximum Angle: 72.13
+Impact Power: 0.04
+
+Escort ID: 4
+Type: EE
+Position: (550.96, 564.65)
+Minimum Velocity: 24.34
+Maximum Velocity: 63.75
+Minimum Angle: 19.64
+Maximum Angle: 89.64
+Impact Power: 0.04
+
+Escort ID: 5
+Type: EE
+Position: (518.65, 573.84)
+Minimum Velocity: 41.56
+Maximum Velocity: 80.15
+Minimum Angle: 14.57
+Maximum Angle: 84.57
+Impact Power: 0.04

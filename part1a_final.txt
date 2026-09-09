@@ -1,0 +1,13 @@
+PART 1-A FINAL BATTLEFIELD
+==========================
+
+Battleship Status: DESTROYED
+Battleship Position: (500.00, 500.00)
+
+Escort Ship Status
+------------------
+E1 [EB] : ALIVE
+E2 [EA] : ALIVE
+E3 [EE] : ALIVE
+E4 [EE] : ALIVE
+E5 [EE] : ALIVE
