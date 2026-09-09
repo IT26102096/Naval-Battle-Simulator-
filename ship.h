@@ -21,6 +21,17 @@ typedef struct
     double health;
     double cumulativeImpact;
 
+    /* Part 2-A */
+    double fireInterval;
+    double nextFireTime;
+
+    /* Part 2-C */
+    double initialImpactPower;
+    double currentImpactPower;
+    double gamma;
+
+    int firingCount;
+
     int alive;
 
 } Battleship;
@@ -45,13 +56,24 @@ typedef struct
     double maxAngle;
     double angleRange;
 
+    /* Base impact power */
     double impactPower;
 
-    int alive;
-
-    /* Part 1-C
-       Each escort ship can fire only once */
+    /* Part 1-C */
     int hasFired;
+
+    /* Part 2-B */
+    double fireInterval;
+    double nextFireTime;
+
+    /* Part 2-C */
+    double health;
+    double currentImpactPower;
+    double gamma;
+
+    int firingCount;
+
+    int alive;
 
 } EscortShip;
 
@@ -80,6 +102,5 @@ typedef struct
 void setupBattlefield(Battlefield *battlefield);
 
 void printBattlefield(const Battlefield *battlefield);
-
 
 #endif

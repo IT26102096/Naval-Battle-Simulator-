@@ -88,7 +88,7 @@ static void generateEscortShips(Battlefield *battlefield)
         escort->id = i + 1;
 
 
-        /* Random position inside the canvas */
+        /* Random position inside the battlefield */
         escort->x = randomBetween(
             0.0,
             battlefield->canvasSize
@@ -100,7 +100,7 @@ static void generateEscortShips(Battlefield *battlefield)
         );
 
 
-        /* Random Escort type */
+        /* Random Escort ship type */
         setEscortType(
             escort,
             rand() % 5
@@ -119,12 +119,8 @@ static void generateEscortShips(Battlefield *battlefield)
 
 
         /*
-           EA maximum velocity is
-           1.2 * Battleship maximum velocity.
-
-           Other Escort maximum velocities
-           are randomly generated below
-           Battleship maximum velocity.
+           EA maximum velocity =
+           1.2 * Battleship maximum velocity
         */
 
         if (strcmp(escort->type, "EA") == 0)
@@ -135,6 +131,12 @@ static void generateEscortShips(Battlefield *battlefield)
         }
         else
         {
+            /*
+               Other Escort maximum velocities
+               are generated below the
+               Battleship maximum velocity.
+            */
+
             escort->maxVelocity =
                 randomBetween(
                     0.55 *
@@ -157,16 +159,63 @@ static void generateEscortShips(Battlefield *battlefield)
             );
 
 
-        /* Ship starts alive */
+        /* =================================================
+           BASIC STATUS
+           ================================================= */
+
         escort->alive = 1;
 
 
-        /*
-           Part 1-C:
-           Every Escort ship initially
-           has not fired.
-        */
+        /* =================================================
+           PART 1-C INITIAL VALUES
+           ================================================= */
+
         escort->hasFired = 0;
+
+
+        /* =================================================
+           PART 2-B / PART 2-C INITIAL VALUES
+           ================================================= */
+
+        /*
+           Escort starts with 100% health.
+        */
+
+        escort->health = 1.0;
+
+
+        /*
+           Fire interval values will be configured
+           when Part 2-B is implemented.
+        */
+
+        escort->fireInterval = 0.0;
+        escort->nextFireTime = 0.0;
+
+
+        /*
+           At the beginning, current impact power
+           is equal to the Escort's normal
+           impact power.
+        */
+
+        escort->currentImpactPower =
+            escort->impactPower;
+
+
+        /*
+           Gamma value will be configured
+           in Part 2-C.
+        */
+
+        escort->gamma = 0.0;
+
+
+        /*
+           No shots have been fired yet.
+        */
+
+        escort->firingCount = 0;
     }
 }
 
@@ -181,14 +230,20 @@ void setupBattlefield(Battlefield *battlefield)
     unsigned int seed;
 
 
-    printf("\n--- Battlefield Setup ---\n");
+    printf(
+        "\n--- Battlefield Setup ---\n"
+    );
 
 
-    /* Canvas size */
+    /* =====================================================
+       CANVAS SIZE
+       ===================================================== */
 
     do
     {
-        printf("Enter square canvas size D: ");
+        printf(
+            "Enter square canvas size D: "
+        );
 
         scanf(
             "%lf",
@@ -196,10 +251,14 @@ void setupBattlefield(Battlefield *battlefield)
         );
 
     }
-    while (battlefield->canvasSize <= 0.0);
+    while (
+        battlefield->canvasSize <= 0.0
+    );
 
 
-    /* Number of Escort ships */
+    /* =====================================================
+       NUMBER OF ESCORT SHIPS
+       ===================================================== */
 
     do
     {
@@ -220,7 +279,9 @@ void setupBattlefield(Battlefield *battlefield)
     );
 
 
-    /* Battleship type */
+    /* =====================================================
+       BATTLESHIP TYPE
+       ===================================================== */
 
     do
     {
@@ -239,13 +300,18 @@ void setupBattlefield(Battlefield *battlefield)
             );
 
     }
-    while (!validBattleshipType(type));
+    while (
+        !validBattleshipType(type)
+    );
 
 
-    battlefield->battleship.type = type;
+    battlefield->battleship.type =
+        type;
 
 
-    /* Battleship X position */
+    /* =====================================================
+       BATTLESHIP X POSITION
+       ===================================================== */
 
     do
     {
@@ -267,7 +333,9 @@ void setupBattlefield(Battlefield *battlefield)
     );
 
 
-    /* Battleship Y position */
+    /* =====================================================
+       BATTLESHIP Y POSITION
+       ===================================================== */
 
     do
     {
@@ -289,7 +357,9 @@ void setupBattlefield(Battlefield *battlefield)
     );
 
 
-    /* Battleship maximum shell velocity */
+    /* =====================================================
+       BATTLESHIP MAXIMUM SHELL VELOCITY
+       ===================================================== */
 
     do
     {
@@ -308,7 +378,9 @@ void setupBattlefield(Battlefield *battlefield)
     );
 
 
-    /* Random seed */
+    /* =====================================================
+       RANDOM SEED
+       ===================================================== */
 
     printf(
         "Enter random seed value: "
@@ -324,14 +396,17 @@ void setupBattlefield(Battlefield *battlefield)
 
 
     /* =====================================================
-       Battleship initial status
+       BATTLESHIP BASIC INITIAL STATUS
        ===================================================== */
 
     battlefield->battleship.alive = 1;
 
 
+    /* =====================================================
+       PART 1-C INITIAL VALUES
+       ===================================================== */
+
     /*
-       Part 1-C:
        1.0 represents 100% health.
     */
 
@@ -339,14 +414,56 @@ void setupBattlefield(Battlefield *battlefield)
 
 
     /*
-       At the beginning, Battleship has
-       received no damage.
+       Battleship initially has no damage.
     */
 
     battlefield->battleship.cumulativeImpact = 0.0;
 
 
-    /* Generate Escort ships */
+    /* =====================================================
+       PART 2-A INITIAL VALUES
+       ===================================================== */
+
+    /*
+       Fire interval will be configured when
+       Part 2-A is implemented.
+    */
+
+    battlefield->battleship.fireInterval = 0.0;
+
+    battlefield->battleship.nextFireTime = 0.0;
+
+
+    /* =====================================================
+       PART 2-C INITIAL VALUES
+       ===================================================== */
+
+    /*
+       Battleship starts with impact power 1.0.
+    */
+
+    battlefield->battleship.initialImpactPower = 1.0;
+
+    battlefield->battleship.currentImpactPower = 1.0;
+
+
+    /*
+       Gamma will be configured later.
+    */
+
+    battlefield->battleship.gamma = 0.0;
+
+
+    /*
+       No Battleship shots fired yet.
+    */
+
+    battlefield->battleship.firingCount = 0;
+
+
+    /* =====================================================
+       GENERATE ESCORT SHIPS
+       ===================================================== */
 
     generateEscortShips(
         battlefield
@@ -382,7 +499,9 @@ void printBattlefield(
     );
 
 
-    /* Battleship details */
+    /* =====================================================
+       BATTLESHIP DETAILS
+       ===================================================== */
 
     printf(
         "\nBattleship\n"
@@ -416,10 +535,6 @@ void printBattlefield(
     );
 
 
-    /*
-       Part 1-C values
-    */
-
     printf(
         "Health: %.2f%%\n",
         battlefield->battleship.health * 100.0
@@ -432,7 +547,39 @@ void printBattlefield(
     );
 
 
-    /* Escort Ship details */
+    /*
+       Part 2 values.
+       These may still be zero before
+       Part 2 setup is performed.
+    */
+
+    printf(
+        "Fire Interval: %.2f seconds\n",
+        battlefield->battleship.fireInterval
+    );
+
+
+    printf(
+        "Current Impact Power: %.4f\n",
+        battlefield->battleship.currentImpactPower
+    );
+
+
+    printf(
+        "Gamma: %.4f\n",
+        battlefield->battleship.gamma
+    );
+
+
+    printf(
+        "Firing Count: %d\n",
+        battlefield->battleship.firingCount
+    );
+
+
+    /* =====================================================
+       ESCORT SHIP DETAILS
+       ===================================================== */
 
     printf(
         "\nEscort Ships\n"
@@ -478,7 +625,7 @@ void printBattlefield(
 
 
         printf(
-            "Impact Power: %.2f\n",
+            "Base Impact Power: %.2f\n",
             escort->impactPower
         );
 
@@ -496,6 +643,40 @@ void printBattlefield(
             escort->hasFired
                 ? "YES"
                 : "NO"
+        );
+
+
+        /*
+           Part 2 values
+        */
+
+        printf(
+            "Health: %.2f%%\n",
+            escort->health * 100.0
+        );
+
+
+        printf(
+            "Fire Interval: %.2f seconds\n",
+            escort->fireInterval
+        );
+
+
+        printf(
+            "Current Impact Power: %.4f\n",
+            escort->currentImpactPower
+        );
+
+
+        printf(
+            "Gamma: %.4f\n",
+            escort->gamma
+        );
+
+
+        printf(
+            "Firing Count: %d\n",
+            escort->firingCount
         );
     }
 }
