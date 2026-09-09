@@ -1,0 +1,6 @@
+PART 1-B SUMMARY
+================
+
+Completed Iterations: 5
+Battleship Status: ALIVE
+Escort Ships Remaining: 1

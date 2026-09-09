@@ -27,21 +27,25 @@ int main(void)
             "====================================\n"
         );
 
-        printf(
-            "1. Setup Battlefield\n"
-        );
+       printf(
+    "1. Setup Battlefield\n"
+);
 
-        printf(
-            "2. Show Battlefield\n"
-        );
+printf(
+    "2. Show Battlefield\n"
+);
 
-        printf(
-            "3. Run Part 1-A Simulation\n"
-        );
+printf(
+    "3. Run Part 1-A Simulation\n"
+);
 
-        printf(
-            "4. Exit\n"
-        );
+printf(
+    "4. Run Part 1-B Simulations\n"
+);
+
+printf(
+    "5. Exit\n"
+);
 
         printf(
             "Enter option: "
@@ -103,15 +107,31 @@ int main(void)
                 break;
 
 
-            case 4:
+           case 4:
 
-                printf(
-                    "\nExiting simulator.\n"
-                );
+    if (battlefieldReady)
+    {
+        runPart1B(
+            &battlefield
+        );
+    }
+    else
+    {
+        printf(
+            "\nPlease setup the battlefield first.\n"
+        );
+    }
 
-                break;
+    break;
 
 
+case 5:
+
+    printf(
+        "\nExiting simulator.\n"
+    );
+
+    break;
             default:
 
                 printf(
@@ -120,7 +140,7 @@ int main(void)
         }
 
     }
-    while (choice != 4);
+    while (choice != 5);
 
 
     return 0;

@@ -1,0 +1,39 @@
+PART 1-B SIMULATION 1
+Iteration: 4
+============================
+
+Path Position: (2851.37, 4850.02)
+STATE BEFORE ITERATION
+----------------------
+Battleship Type: U
+Battleship Position: (2851.37, 4850.02)
+Battleship Status: ALIVE
+
+Escort Ships
+------------
+E1 [EB]
+Position: (167.35, 1649.82)
+Velocity: 11.39 - 37.95
+Angle: 25.35 - 55.35
+Impact Power: 0.06
+Status: ALIVE
+
+
+Escort ships destroyed in this iteration: 0
+Iteration battle duration: 0.00 seconds
+
+STATE AFTER ITERATION
+---------------------
+Battleship Type: U
+Battleship Position: (2851.37, 4850.02)
+Battleship Status: ALIVE
+
+Escort Ships
+------------
+E1 [EB]
+Position: (167.35, 1649.82)
+Velocity: 11.39 - 37.95
+Angle: 25.35 - 55.35
+Impact Power: 0.06
+Status: ALIVE
+

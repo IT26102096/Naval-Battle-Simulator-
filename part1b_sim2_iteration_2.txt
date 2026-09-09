@@ -1,0 +1,42 @@
+PART 1-B SIMULATION 2
+Iteration: 2
+============================
+
+Path Position: (1203.01, 2420.63)
+Gun Status: NORMAL
+Battleship Firing Angle: 0.10 - 90.00 degrees
+
+STATE BEFORE ITERATION
+----------------------
+Battleship Type: U
+Battleship Position: (1203.01, 2420.63)
+Battleship Status: ALIVE
+
+Escort Ships
+------------
+E1 [EB]
+Position: (167.35, 1649.82)
+Velocity: 11.39 - 37.95
+Angle: 25.35 - 55.35
+Impact Power: 0.06
+Status: ALIVE
+
+
+Escort ships destroyed in this iteration: 0
+Iteration battle duration: 0.00 seconds
+
+STATE AFTER ITERATION
+---------------------
+Battleship Type: U
+Battleship Position: (1203.01, 2420.63)
+Battleship Status: ALIVE
+
+Escort Ships
+------------
+E1 [EB]
+Position: (167.35, 1649.82)
+Velocity: 11.39 - 37.95
+Angle: 25.35 - 55.35
+Impact Power: 0.06
+Status: ALIVE
+
