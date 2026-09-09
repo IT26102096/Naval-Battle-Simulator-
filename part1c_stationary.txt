@@ -1,0 +1,135 @@
+PART 1-C STATIONARY SIMULATION
+==============================
+
+Initial Battleship Position: (500.00, 500.00)
+
+ESCORT ATTACKS
+--------------
+E4 [EE] hit Battleship
+Impact Power: 0.04
+Impact Time: 2.45 seconds
+Battleship Health: 0.96
+
+E2 [EA] hit Battleship
+Impact Power: 0.08
+Impact Time: 3.28 seconds
+Battleship Health: 0.88
+
+E3 [EE] hit Battleship
+Impact Power: 0.04
+Impact Time: 3.87 seconds
+Battleship Health: 0.84
+
+E8 [EE] hit Battleship
+Impact Power: 0.04
+Impact Time: 3.91 seconds
+Battleship Health: 0.80
+
+E10 [EE] hit Battleship
+Impact Power: 0.04
+Impact Time: 4.73 seconds
+Battleship Health: 0.76
+
+E9 [EC] hit Battleship
+Impact Power: 0.07
+Impact Time: 5.76 seconds
+Battleship Health: 0.69
+
+E5 [EE] hit Battleship
+Impact Power: 0.04
+Impact Time: 8.29 seconds
+Battleship Health: 0.65
+
+E6 [EC] hit Battleship
+Impact Power: 0.07
+Impact Time: 9.10 seconds
+Battleship Health: 0.58
+
+E7 [EB] hit Battleship
+Impact Power: 0.06
+Impact Time: 12.70 seconds
+Battleship Health: 0.52
+
+
+BATTLESHIP ATTACKS
+------------------
+Battleship destroyed E1 [EB]
+Distance: 496.55
+Firing Velocity: 99.92
+Firing Angle: 14.60
+Time to Hit: 5.14 seconds
+
+Battleship destroyed E2 [EA]
+Distance: 388.42
+Firing Velocity: 100.00
+Firing Angle: 11.20
+Time to Hit: 3.96 seconds
+
+Battleship destroyed E3 [EE]
+Distance: 321.87
+Firing Velocity: 99.50
+Firing Angle: 9.30
+Time to Hit: 3.28 seconds
+
+Battleship destroyed E4 [EE]
+Distance: 82.32
+Firing Velocity: 98.24
+Firing Angle: 2.40
+Time to Hit: 0.84 seconds
+
+Battleship destroyed E5 [EE]
+Distance: 76.16
+Firing Velocity: 98.68
+Firing Angle: 2.20
+Time to Hit: 0.77 seconds
+
+Battleship destroyed E6 [EC]
+Distance: 240.29
+Firing Velocity: 99.41
+Firing Angle: 6.90
+Time to Hit: 2.43 seconds
+
+Battleship destroyed E7 [EB]
+Distance: 474.73
+Firing Velocity: 99.93
+Firing Angle: 13.90
+Time to Hit: 4.89 seconds
+
+Battleship destroyed E8 [EE]
+Distance: 264.97
+Firing Velocity: 99.57
+Firing Angle: 7.60
+Time to Hit: 2.68 seconds
+
+Battleship destroyed E9 [EC]
+Distance: 445.18
+Firing Velocity: 99.81
+Firing Angle: 13.00
+Time to Hit: 4.58 seconds
+
+Battleship destroyed E10 [EE]
+Distance: 270.22
+Firing Velocity: 99.91
+Firing Angle: 7.70
+Time to Hit: 2.73 seconds
+
+
+Escort ships destroyed by B in this iteration: 10
+
+Battleship Status: ALIVE
+Battleship Health: 0.52
+Battleship Health Percentage: 52.00%
+Cumulative Impact: 0.48
+
+Escort Ship Status
+------------------
+E1 [EB] : DESTROYED | Fired: NO
+E2 [EA] : DESTROYED | Fired: YES
+E3 [EE] : DESTROYED | Fired: YES
+E4 [EE] : DESTROYED | Fired: YES
+E5 [EE] : DESTROYED | Fired: YES
+E6 [EC] : DESTROYED | Fired: YES
+E7 [EB] : DESTROYED | Fired: YES
+E8 [EE] : DESTROYED | Fired: YES
+E9 [EC] : DESTROYED | Fired: YES
+E10 [EE] : DESTROYED | Fired: YES

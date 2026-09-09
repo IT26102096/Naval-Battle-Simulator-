@@ -6,11 +6,19 @@
 #include "ship.h"
 
 
+/* =========================================================
+   RANDOM NUMBER HELPER
+   ========================================================= */
+
 static double randomBetween(double min, double max)
 {
     return min + ((double)rand() / RAND_MAX) * (max - min);
 }
 
+
+/* =========================================================
+   BATTLESHIP TYPE VALIDATION
+   ========================================================= */
 
 static int validBattleshipType(char type)
 {
@@ -22,6 +30,10 @@ static int validBattleshipType(char type)
            type == 'S';
 }
 
+
+/* =========================================================
+   ESCORT SHIP TYPE PROPERTIES
+   ========================================================= */
 
 static void setEscortType(EscortShip *escort, int randomType)
 {
@@ -60,6 +72,10 @@ static void setEscortType(EscortShip *escort, int randomType)
 }
 
 
+/* =========================================================
+   ESCORT SHIP GENERATION
+   ========================================================= */
+
 static void generateEscortShips(Battlefield *battlefield)
 {
     int i;
@@ -68,8 +84,11 @@ static void generateEscortShips(Battlefield *battlefield)
     {
         EscortShip *escort = &battlefield->escorts[i];
 
+        /* Unique ID */
         escort->id = i + 1;
 
+
+        /* Random position inside the canvas */
         escort->x = randomBetween(
             0.0,
             battlefield->canvasSize
@@ -80,11 +99,15 @@ static void generateEscortShips(Battlefield *battlefield)
             battlefield->canvasSize
         );
 
+
+        /* Random Escort type */
         setEscortType(
             escort,
             rand() % 5
         );
 
+
+        /* Random valid minimum angle */
         escort->minAngle = randomBetween(
             0.0,
             90.0 - escort->angleRange
@@ -94,6 +117,15 @@ static void generateEscortShips(Battlefield *battlefield)
             escort->minAngle +
             escort->angleRange;
 
+
+        /*
+           EA maximum velocity is
+           1.2 * Battleship maximum velocity.
+
+           Other Escort maximum velocities
+           are randomly generated below
+           Battleship maximum velocity.
+        */
 
         if (strcmp(escort->type, "EA") == 0)
         {
@@ -114,6 +146,7 @@ static void generateEscortShips(Battlefield *battlefield)
         }
 
 
+        /* Random minimum velocity */
         escort->minVelocity =
             randomBetween(
                 0.20 *
@@ -123,18 +156,35 @@ static void generateEscortShips(Battlefield *battlefield)
                 escort->maxVelocity
             );
 
+
+        /* Ship starts alive */
         escort->alive = 1;
+
+
+        /*
+           Part 1-C:
+           Every Escort ship initially
+           has not fired.
+        */
+        escort->hasFired = 0;
     }
 }
 
+
+/* =========================================================
+   BATTLEFIELD SETUP
+   ========================================================= */
 
 void setupBattlefield(Battlefield *battlefield)
 {
     char type;
     unsigned int seed;
 
+
     printf("\n--- Battlefield Setup ---\n");
 
+
+    /* Canvas size */
 
     do
     {
@@ -148,6 +198,8 @@ void setupBattlefield(Battlefield *battlefield)
     }
     while (battlefield->canvasSize <= 0.0);
 
+
+    /* Number of Escort ships */
 
     do
     {
@@ -167,6 +219,8 @@ void setupBattlefield(Battlefield *battlefield)
         battlefield->escortCount > MAX_ESCORTS
     );
 
+
+    /* Battleship type */
 
     do
     {
@@ -191,6 +245,8 @@ void setupBattlefield(Battlefield *battlefield)
     battlefield->battleship.type = type;
 
 
+    /* Battleship X position */
+
     do
     {
         printf(
@@ -210,6 +266,8 @@ void setupBattlefield(Battlefield *battlefield)
         battlefield->canvasSize
     );
 
+
+    /* Battleship Y position */
 
     do
     {
@@ -231,6 +289,8 @@ void setupBattlefield(Battlefield *battlefield)
     );
 
 
+    /* Battleship maximum shell velocity */
+
     do
     {
         printf(
@@ -248,6 +308,8 @@ void setupBattlefield(Battlefield *battlefield)
     );
 
 
+    /* Random seed */
+
     printf(
         "Enter random seed value: "
     );
@@ -261,8 +323,30 @@ void setupBattlefield(Battlefield *battlefield)
     srand(seed);
 
 
+    /* =====================================================
+       Battleship initial status
+       ===================================================== */
+
     battlefield->battleship.alive = 1;
 
+
+    /*
+       Part 1-C:
+       1.0 represents 100% health.
+    */
+
+    battlefield->battleship.health = 1.0;
+
+
+    /*
+       At the beginning, Battleship has
+       received no damage.
+    */
+
+    battlefield->battleship.cumulativeImpact = 0.0;
+
+
+    /* Generate Escort ships */
 
     generateEscortShips(
         battlefield
@@ -275,15 +359,21 @@ void setupBattlefield(Battlefield *battlefield)
 }
 
 
+/* =========================================================
+   DISPLAY BATTLEFIELD
+   ========================================================= */
+
 void printBattlefield(
     const Battlefield *battlefield
 )
 {
     int i;
 
+
     printf(
         "\n========== BATTLEFIELD ==========\n"
     );
+
 
     printf(
         "Canvas: (0,0) to (%.2f, %.2f)\n",
@@ -292,14 +382,18 @@ void printBattlefield(
     );
 
 
+    /* Battleship details */
+
     printf(
         "\nBattleship\n"
     );
+
 
     printf(
         "Type: %c\n",
         battlefield->battleship.type
     );
+
 
     printf(
         "Position: (%.2f, %.2f)\n",
@@ -307,11 +401,38 @@ void printBattlefield(
         battlefield->battleship.y
     );
 
+
     printf(
         "Maximum shell velocity: %.2f\n",
         battlefield->battleship.maxVelocity
     );
 
+
+    printf(
+        "Status: %s\n",
+        battlefield->battleship.alive
+            ? "ALIVE"
+            : "DESTROYED"
+    );
+
+
+    /*
+       Part 1-C values
+    */
+
+    printf(
+        "Health: %.2f%%\n",
+        battlefield->battleship.health * 100.0
+    );
+
+
+    printf(
+        "Cumulative Impact: %.2f\n",
+        battlefield->battleship.cumulativeImpact
+    );
+
+
+    /* Escort Ship details */
 
     printf(
         "\nEscort Ships\n"
@@ -359,6 +480,22 @@ void printBattlefield(
         printf(
             "Impact Power: %.2f\n",
             escort->impactPower
+        );
+
+
+        printf(
+            "Status: %s\n",
+            escort->alive
+                ? "ALIVE"
+                : "DESTROYED"
+        );
+
+
+        printf(
+            "Has Fired: %s\n",
+            escort->hasFired
+                ? "YES"
+                : "NO"
         );
     }
 }

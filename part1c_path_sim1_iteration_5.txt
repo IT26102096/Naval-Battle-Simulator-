@@ -1,0 +1,31 @@
+PART 1-C PATH SIMULATION 1
+Iteration: 5
+===============================
+
+Battleship Position: (515.42, 429.53)
+
+ESCORT ATTACKS
+--------------
+
+BATTLESHIP ATTACKS
+------------------
+
+Escort ships destroyed by B in this iteration: 0
+
+Battleship Status: ALIVE
+Battleship Health: 0.54
+Battleship Health Percentage: 54.00%
+Cumulative Impact: 0.46
+
+Escort Ship Status
+------------------
+E1 [EB] : DESTROYED | Fired: YES
+E2 [EA] : DESTROYED | Fired: YES
+E3 [EE] : DESTROYED | Fired: YES
+E4 [EE] : DESTROYED | Fired: YES
+E5 [EE] : DESTROYED | Fired: YES
+E6 [EC] : DESTROYED | Fired: YES
+E7 [EB] : DESTROYED | Fired: YES
+E8 [EE] : DESTROYED | Fired: NO
+E9 [EC] : DESTROYED | Fired: YES
+E10 [EE] : DESTROYED | Fired: NO

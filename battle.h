@@ -31,5 +31,6 @@ int findShotSolution(
 
 void runPart1A(Battlefield *battlefield);
 void runPart1B(const Battlefield *initialBattlefield);
+void runPart1C(const Battlefield *initialBattlefield);
 
 #endif

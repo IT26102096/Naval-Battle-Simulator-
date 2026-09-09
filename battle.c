@@ -1498,3 +1498,1006 @@ void runPart1B(
         "\nPart 1-B results saved to text files.\n"
     );
 }
+
+/* =========================================================
+   PART 1-C - CUMULATIVE DAMAGE SYSTEM
+   ========================================================= */
+
+typedef struct
+{
+    int escortIndex;
+    ShotSolution shot;
+
+} EscortAttackEvent;
+
+
+static void resetPart1CState(
+    Battlefield *battlefield
+)
+{
+    int i;
+
+    battlefield->battleship.alive = 1;
+    battlefield->battleship.health = 1.0;
+    battlefield->battleship.cumulativeImpact = 0.0;
+
+    for (i = 0; i < battlefield->escortCount; i++)
+    {
+        battlefield->escorts[i].alive = 1;
+        battlefield->escorts[i].hasFired = 0;
+    }
+}
+
+
+static void sortEscortAttackEvents(
+    EscortAttackEvent events[],
+    int count
+)
+{
+    int i;
+    int j;
+
+    for (i = 0; i < count - 1; i++)
+    {
+        for (j = 0; j < count - i - 1; j++)
+        {
+            if (events[j].shot.time > events[j + 1].shot.time)
+            {
+                EscortAttackEvent temp = events[j];
+
+                events[j] = events[j + 1];
+                events[j + 1] = temp;
+            }
+        }
+    }
+}
+
+
+static int processPart1CEscortAttacks(
+    Battlefield *battlefield,
+    FILE *file
+)
+{
+    EscortAttackEvent events[MAX_ESCORTS];
+
+    int eventCount = 0;
+    int i;
+
+
+    /*
+       Find all living Escort Ships that have not
+       fired before and can currently hit B.
+    */
+
+    for (i = 0; i < battlefield->escortCount; i++)
+    {
+        EscortShip *escort =
+            &battlefield->escorts[i];
+
+        ShotSolution shot;
+
+        double distance;
+
+
+        if (!escort->alive || escort->hasFired)
+        {
+            continue;
+        }
+
+
+        distance =
+            calculateDistance(
+                escort->x,
+                escort->y,
+                battlefield->battleship.x,
+                battlefield->battleship.y
+            );
+
+
+        if (
+            findShotSolution(
+                distance,
+                escort->minVelocity,
+                escort->maxVelocity,
+                escort->minAngle,
+                escort->maxAngle,
+                &shot
+            )
+        )
+        {
+            events[eventCount].escortIndex = i;
+            events[eventCount].shot = shot;
+
+            eventCount++;
+        }
+    }
+
+
+    /*
+       Shells are processed according to their
+       impact time.
+    */
+
+    sortEscortAttackEvents(
+        events,
+        eventCount
+    );
+
+
+    for (i = 0; i < eventCount; i++)
+    {
+        EscortShip *escort =
+            &battlefield->escorts[
+                events[i].escortIndex
+            ];
+
+
+        escort->hasFired = 1;
+
+
+        battlefield->battleship.health -=
+            escort->impactPower;
+
+
+        battlefield->battleship.cumulativeImpact +=
+            escort->impactPower;
+
+
+        if (battlefield->battleship.health < 0.0)
+        {
+            battlefield->battleship.health = 0.0;
+        }
+
+
+        printf(
+            "E%d [%s] hit B: %.0f%% damage\n",
+            escort->id,
+            escort->type,
+            escort->impactPower * 100.0
+        );
+
+
+        fprintf(
+            file,
+            "E%d [%s] hit Battleship\n",
+            escort->id,
+            escort->type
+        );
+
+        fprintf(
+            file,
+            "Impact Power: %.2f\n",
+            escort->impactPower
+        );
+
+        fprintf(
+            file,
+            "Impact Time: %.2f seconds\n",
+            events[i].shot.time
+        );
+
+        fprintf(
+            file,
+            "Battleship Health: %.2f\n\n",
+            battlefield->battleship.health
+        );
+
+
+        if (battlefield->battleship.health <= 0.0)
+        {
+            battlefield->battleship.alive = 0;
+
+            printf(
+                "Battleship destroyed by cumulative damage.\n"
+            );
+
+            fprintf(
+                file,
+                "Battleship destroyed by cumulative damage.\n"
+            );
+
+            return 1;
+        }
+    }
+
+
+    return 0;
+}
+
+
+static int processPart1CBattleshipAttacks(
+    Battlefield *battlefield,
+    double minimumAngle,
+    double maximumAngle,
+    FILE *file
+)
+{
+    int i;
+    int destroyedCount = 0;
+
+
+    if (!battlefield->battleship.alive)
+    {
+        return 0;
+    }
+
+
+    for (i = 0; i < battlefield->escortCount; i++)
+    {
+        EscortShip *escort =
+            &battlefield->escorts[i];
+
+        ShotSolution shot;
+
+        double distance;
+
+
+        if (!escort->alive)
+        {
+            continue;
+        }
+
+
+        distance =
+            calculateDistance(
+                battlefield->battleship.x,
+                battlefield->battleship.y,
+                escort->x,
+                escort->y
+            );
+
+
+        if (
+            findShotSolution(
+                distance,
+                0.0,
+                battlefield->battleship.maxVelocity,
+                minimumAngle,
+                maximumAngle,
+                &shot
+            )
+        )
+        {
+            escort->alive = 0;
+
+            destroyedCount++;
+
+
+            printf(
+                "Battleship destroyed E%d [%s]\n",
+                escort->id,
+                escort->type
+            );
+
+
+            fprintf(
+                file,
+                "Battleship destroyed E%d [%s]\n",
+                escort->id,
+                escort->type
+            );
+
+            fprintf(
+                file,
+                "Distance: %.2f\n",
+                distance
+            );
+
+            fprintf(
+                file,
+                "Firing Velocity: %.2f\n",
+                shot.velocity
+            );
+
+            fprintf(
+                file,
+                "Firing Angle: %.2f\n",
+                shot.angle
+            );
+
+            fprintf(
+                file,
+                "Time to Hit: %.2f seconds\n\n",
+                shot.time
+            );
+        }
+    }
+
+
+    return destroyedCount;
+}
+
+
+static void writePart1CState(
+    FILE *file,
+    const Battlefield *battlefield
+)
+{
+    int i;
+
+
+    fprintf(
+        file,
+        "\nBattleship Status: %s\n",
+        battlefield->battleship.alive
+            ? "ALIVE"
+            : "DESTROYED"
+    );
+
+
+    fprintf(
+        file,
+        "Battleship Health: %.2f\n",
+        battlefield->battleship.health
+    );
+
+
+    fprintf(
+        file,
+        "Battleship Health Percentage: %.2f%%\n",
+        battlefield->battleship.health * 100.0
+    );
+
+
+    fprintf(
+        file,
+        "Cumulative Impact: %.2f\n\n",
+        battlefield->battleship.cumulativeImpact
+    );
+
+
+    fprintf(
+        file,
+        "Escort Ship Status\n"
+    );
+
+    fprintf(
+        file,
+        "------------------\n"
+    );
+
+
+    for (i = 0; i < battlefield->escortCount; i++)
+    {
+        const EscortShip *escort =
+            &battlefield->escorts[i];
+
+
+        fprintf(
+            file,
+            "E%d [%s] : %s | Fired: %s\n",
+            escort->id,
+            escort->type,
+            escort->alive
+                ? "ALIVE"
+                : "DESTROYED",
+            escort->hasFired
+                ? "YES"
+                : "NO"
+        );
+    }
+}
+
+
+static int simulatePart1CIteration(
+    Battlefield *battlefield,
+    double minimumAngle,
+    double maximumAngle,
+    FILE *file
+)
+{
+    int destroyedEscortCount;
+
+
+    fprintf(
+        file,
+        "\nESCORT ATTACKS\n"
+    );
+
+    fprintf(
+        file,
+        "--------------\n"
+    );
+
+
+    if (
+        processPart1CEscortAttacks(
+            battlefield,
+            file
+        )
+    )
+    {
+        writePart1CState(
+            file,
+            battlefield
+        );
+
+        return 1;
+    }
+
+
+    fprintf(
+        file,
+        "\nBATTLESHIP ATTACKS\n"
+    );
+
+    fprintf(
+        file,
+        "------------------\n"
+    );
+
+
+    destroyedEscortCount =
+        processPart1CBattleshipAttacks(
+            battlefield,
+            minimumAngle,
+            maximumAngle,
+            file
+        );
+
+
+    fprintf(
+        file,
+        "\nEscort ships destroyed by B in this iteration: %d\n",
+        destroyedEscortCount
+    );
+
+
+    writePart1CState(
+        file,
+        battlefield
+    );
+
+
+    return 0;
+}
+
+
+static void runPart1CStationary(
+    const Battlefield *initialBattlefield
+)
+{
+    Battlefield simulation;
+
+    FILE *file;
+
+
+    simulation =
+        *initialBattlefield;
+
+
+    resetPart1CState(
+        &simulation
+    );
+
+
+    file = fopen(
+        "part1c_stationary.txt",
+        "w"
+    );
+
+
+    if (file == NULL)
+    {
+        printf(
+            "Could not create Part 1-C stationary result file.\n"
+        );
+
+        return;
+    }
+
+
+    fprintf(
+        file,
+        "PART 1-C STATIONARY SIMULATION\n"
+    );
+
+    fprintf(
+        file,
+        "==============================\n\n"
+    );
+
+
+    fprintf(
+        file,
+        "Initial Battleship Position: (%.2f, %.2f)\n",
+        simulation.battleship.x,
+        simulation.battleship.y
+    );
+
+
+    simulatePart1CIteration(
+        &simulation,
+        0.1,
+        89.9,
+        file
+    );
+
+
+    fclose(file);
+
+
+    printf(
+        "\nStationary Part 1-C Result\n"
+    );
+
+    printf(
+        "Battleship: %s\n",
+        simulation.battleship.alive
+            ? "ALIVE"
+            : "DESTROYED"
+    );
+
+    printf(
+        "Remaining Health: %.2f%%\n",
+        simulation.battleship.health * 100.0
+    );
+
+    printf(
+        "Cumulative Impact: %.2f\n",
+        simulation.battleship.cumulativeImpact
+    );
+
+    printf(
+        "Saved to part1c_stationary.txt\n"
+    );
+}
+
+
+static int runPart1CPath(
+    Battlefield *battlefield,
+    const PathPoint path[],
+    int pathCount,
+    int simulationNumber,
+    int jamAfterIterations,
+    double jamAngle
+)
+{
+    int i;
+    int completedIterations = 0;
+
+
+    for (
+        i = 0;
+        i < pathCount &&
+        battlefield->battleship.alive;
+        i++
+    )
+    {
+        char filename[120];
+
+        FILE *file;
+
+        double minimumAngle = 0.1;
+
+        int gunJammed = 0;
+
+
+        if (
+            simulationNumber == 2 &&
+            i >= jamAfterIterations
+        )
+        {
+            minimumAngle = jamAngle;
+            gunJammed = 1;
+        }
+
+
+        battlefield->battleship.x =
+            path[i].x;
+
+        battlefield->battleship.y =
+            path[i].y;
+
+
+        snprintf(
+            filename,
+            sizeof(filename),
+            "part1c_path_sim%d_iteration_%d.txt",
+            simulationNumber,
+            i + 1
+        );
+
+
+        file = fopen(
+            filename,
+            "w"
+        );
+
+
+        if (file == NULL)
+        {
+            printf(
+                "Could not create %s\n",
+                filename
+            );
+
+            continue;
+        }
+
+
+        fprintf(
+            file,
+            "PART 1-C PATH SIMULATION %d\n",
+            simulationNumber
+        );
+
+        fprintf(
+            file,
+            "Iteration: %d\n",
+            i + 1
+        );
+
+        fprintf(
+            file,
+            "===============================\n\n"
+        );
+
+
+        fprintf(
+            file,
+            "Battleship Position: (%.2f, %.2f)\n",
+            path[i].x,
+            path[i].y
+        );
+
+
+        if (simulationNumber == 2)
+        {
+            fprintf(
+                file,
+                "Gun Status: %s\n",
+                gunJammed
+                    ? "JAMMED"
+                    : "NORMAL"
+            );
+
+            fprintf(
+                file,
+                "Battleship Angle Range: %.2f - 90.00\n",
+                minimumAngle
+            );
+        }
+
+
+        simulatePart1CIteration(
+            battlefield,
+            minimumAngle,
+            89.9,
+            file
+        );
+
+
+        fclose(file);
+
+        completedIterations++;
+
+
+        printf(
+            "Part 1-C path iteration %d completed.\n",
+            i + 1
+        );
+    }
+
+
+    return completedIterations;
+}
+
+
+static void savePart1CPathSummary(
+    const char *filename,
+    const Battlefield *battlefield,
+    int completedIterations
+)
+{
+    FILE *file;
+
+
+    file = fopen(
+        filename,
+        "w"
+    );
+
+
+    if (file == NULL)
+    {
+        return;
+    }
+
+
+    fprintf(
+        file,
+        "PART 1-C PATH SUMMARY\n"
+    );
+
+    fprintf(
+        file,
+        "=====================\n\n"
+    );
+
+
+    fprintf(
+        file,
+        "Completed Iterations: %d\n",
+        completedIterations
+    );
+
+
+    fprintf(
+        file,
+        "Battleship Status: %s\n",
+        battlefield->battleship.alive
+            ? "ALIVE"
+            : "DESTROYED"
+    );
+
+
+    fprintf(
+        file,
+        "Remaining Health: %.2f%%\n",
+        battlefield->battleship.health * 100.0
+    );
+
+
+    fprintf(
+        file,
+        "Cumulative Impact: %.2f\n",
+        battlefield->battleship.cumulativeImpact
+    );
+
+
+    fclose(file);
+}
+
+
+void runPart1C(
+    const Battlefield *initialBattlefield
+)
+{
+    Battlefield normalPathSimulation;
+    Battlefield jamPathSimulation;
+
+    PathPoint path[MAX_PATH_POINTS];
+
+    int pathCount;
+    int jamAfterIterations;
+    int i;
+
+    double jamAngle;
+
+    unsigned int pathSeed;
+
+    int normalIterations;
+    int jamIterations;
+
+
+    printf(
+        "\n====================================\n"
+    );
+
+    printf(
+        "      PART 1-C DAMAGE SIMULATION\n"
+    );
+
+    printf(
+        "====================================\n"
+    );
+
+
+    /*
+       Redo Part 1-A using cumulative damage.
+    */
+
+    runPart1CStationary(
+        initialBattlefield
+    );
+
+
+    /*
+       Redo Part 1-B using cumulative damage.
+    */
+
+    normalPathSimulation =
+        *initialBattlefield;
+
+    jamPathSimulation =
+        *initialBattlefield;
+
+
+    resetPart1CState(
+        &normalPathSimulation
+    );
+
+    resetPart1CState(
+        &jamPathSimulation
+    );
+
+
+    do
+    {
+        printf(
+            "\nEnter number of path points k (2-%d): ",
+            MAX_PATH_POINTS
+        );
+
+        scanf(
+            "%d",
+            &pathCount
+        );
+
+    }
+    while (
+        pathCount < 2 ||
+        pathCount > MAX_PATH_POINTS
+    );
+
+
+    printf(
+        "Enter path random seed: "
+    );
+
+    scanf(
+        "%u",
+        &pathSeed
+    );
+
+
+    srand(
+        pathSeed
+    );
+
+
+    /*
+       Same path is used for both simulations.
+    */
+
+    for (i = 0; i < pathCount; i++)
+    {
+        path[i].x =
+            randomPathCoordinate(
+                initialBattlefield->canvasSize
+            );
+
+        path[i].y =
+            randomPathCoordinate(
+                initialBattlefield->canvasSize
+            );
+    }
+
+
+    do
+    {
+        printf(
+            "Enter t for gun jam (1 to %d): ",
+            pathCount - 1
+        );
+
+        scanf(
+            "%d",
+            &jamAfterIterations
+        );
+
+    }
+    while (
+        jamAfterIterations < 1 ||
+        jamAfterIterations >= pathCount
+    );
+
+
+    do
+    {
+        printf(
+            "Enter jammed minimum angle (0 < angle < 30): "
+        );
+
+        scanf(
+            "%lf",
+            &jamAngle
+        );
+
+    }
+    while (
+        jamAngle <= 0.0 ||
+        jamAngle >= 30.0
+    );
+
+
+    printf(
+        "\nPart 1-C Path Simulation 1 - Normal Gun\n"
+    );
+
+
+    normalIterations =
+        runPart1CPath(
+            &normalPathSimulation,
+            path,
+            pathCount,
+            1,
+            0,
+            0.0
+        );
+
+
+    savePart1CPathSummary(
+        "part1c_path_sim1_summary.txt",
+        &normalPathSimulation,
+        normalIterations
+    );
+
+
+    printf(
+        "\nPart 1-C Path Simulation 2 - Jammed Gun\n"
+    );
+
+
+    jamIterations =
+        runPart1CPath(
+            &jamPathSimulation,
+            path,
+            pathCount,
+            2,
+            jamAfterIterations,
+            jamAngle
+        );
+
+
+    savePart1CPathSummary(
+        "part1c_path_sim2_summary.txt",
+        &jamPathSimulation,
+        jamIterations
+    );
+
+
+    printf(
+        "\n========== PART 1-C COMPARISON ==========\n"
+    );
+
+
+    printf(
+        "Normal Path Simulation:\n"
+    );
+
+    printf(
+        "Status: %s\n",
+        normalPathSimulation.battleship.alive
+            ? "ALIVE"
+            : "DESTROYED"
+    );
+
+    printf(
+        "Health: %.2f%%\n",
+        normalPathSimulation.battleship.health * 100.0
+    );
+
+    printf(
+        "Cumulative Impact: %.2f\n\n",
+        normalPathSimulation.battleship.cumulativeImpact
+    );
+
+
+    printf(
+        "Jammed Path Simulation:\n"
+    );
+
+    printf(
+        "Status: %s\n",
+        jamPathSimulation.battleship.alive
+            ? "ALIVE"
+            : "DESTROYED"
+    );
+
+    printf(
+        "Health: %.2f%%\n",
+        jamPathSimulation.battleship.health * 100.0
+    );
+
+    printf(
+        "Cumulative Impact: %.2f\n",
+        jamPathSimulation.battleship.cumulativeImpact
+    );
+
+
+    printf(
+        "\nPart 1-C results saved to text files.\n"
+    );
+}

@@ -3,6 +3,11 @@
 
 #define MAX_ESCORTS 100
 
+
+/* =========================
+   Battleship Structure
+   ========================= */
+
 typedef struct
 {
     char type;
@@ -12,10 +17,18 @@ typedef struct
 
     double maxVelocity;
 
+    /* Part 1-C */
+    double health;
+    double cumulativeImpact;
+
     int alive;
 
 } Battleship;
 
+
+/* =========================
+   Escort Ship Structure
+   ========================= */
 
 typedef struct
 {
@@ -36,8 +49,16 @@ typedef struct
 
     int alive;
 
+    /* Part 1-C
+       Each escort ship can fire only once */
+    int hasFired;
+
 } EscortShip;
 
+
+/* =========================
+   Battlefield Structure
+   ========================= */
 
 typedef struct
 {
@@ -52,8 +73,13 @@ typedef struct
 } Battlefield;
 
 
+/* =========================
+   Function Declarations
+   ========================= */
+
 void setupBattlefield(Battlefield *battlefield);
 
 void printBattlefield(const Battlefield *battlefield);
+
 
 #endif

@@ -1,0 +1,7 @@
+PART 1-C PATH SUMMARY
+=====================
+
+Completed Iterations: 5
+Battleship Status: ALIVE
+Remaining Health: 54.00%
+Cumulative Impact: 0.46

@@ -27,25 +27,31 @@ int main(void)
             "====================================\n"
         );
 
-       printf(
-    "1. Setup Battlefield\n"
-);
 
-printf(
-    "2. Show Battlefield\n"
-);
+        printf(
+            "1. Setup Battlefield\n"
+        );
 
-printf(
-    "3. Run Part 1-A Simulation\n"
-);
+        printf(
+            "2. Show Battlefield\n"
+        );
 
-printf(
-    "4. Run Part 1-B Simulations\n"
-);
+        printf(
+            "3. Run Part 1-A Simulation\n"
+        );
 
-printf(
-    "5. Exit\n"
-);
+        printf(
+            "4. Run Part 1-B Simulations\n"
+        );
+
+        printf(
+            "5. Run Part 1-C Cumulative Damage Simulation\n"
+        );
+
+        printf(
+            "6. Exit\n"
+        );
+
 
         printf(
             "Enter option: "
@@ -107,31 +113,51 @@ printf(
                 break;
 
 
-           case 4:
+            case 4:
 
-    if (battlefieldReady)
-    {
-        runPart1B(
-            &battlefield
-        );
-    }
-    else
-    {
-        printf(
-            "\nPlease setup the battlefield first.\n"
-        );
-    }
+                if (battlefieldReady)
+                {
+                    runPart1B(
+                        &battlefield
+                    );
+                }
+                else
+                {
+                    printf(
+                        "\nPlease setup the battlefield first.\n"
+                    );
+                }
 
-    break;
+                break;
 
 
-case 5:
+            case 5:
 
-    printf(
-        "\nExiting simulator.\n"
-    );
+                if (battlefieldReady)
+                {
+                    runPart1C(
+                        &battlefield
+                    );
+                }
+                else
+                {
+                    printf(
+                        "\nPlease setup the battlefield first.\n"
+                    );
+                }
 
-    break;
+                break;
+
+
+            case 6:
+
+                printf(
+                    "\nExiting simulator.\n"
+                );
+
+                break;
+
+
             default:
 
                 printf(
@@ -140,7 +166,7 @@ case 5:
         }
 
     }
-    while (choice != 5);
+    while (choice != 6);
 
 
     return 0;
